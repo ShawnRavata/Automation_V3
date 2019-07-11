@@ -1,6 +1,7 @@
 from arduino_publish_value import arduino_publish_value
 import threading
 from logger_controller import logger_controller
+from state_system import state_system
 
 # creates the publishing class that will take in serial arduino output and the publish it to subscribers
 rize = arduino_publish_value()
@@ -8,6 +9,11 @@ rize = arduino_publish_value()
 # register the csv logger to take published arduino data
 logger_controller = logger_controller()
 rize.register_subscriber(logger_controller.consume)
+
+# register the state system subscriber
+state_system_object = state_system()
+rize.register_subscriber(state_system_object.consume)
+
 
 #while the arduino is connected keep publishing values
 while(rize.is_on()):
