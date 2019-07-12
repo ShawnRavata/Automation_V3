@@ -8,7 +8,6 @@ class arduino_publish_value():
         print("Arduino is connected", self.arduino.is_open)
         self.name_list_class_obj = name_list
         self.name_list = name_list.get_name_string()
-        self.arduino = serial.Serial(port="COM12", baudrate=115200)
 
     def register_subscriber(self, sub):
         self.subs += [sub]

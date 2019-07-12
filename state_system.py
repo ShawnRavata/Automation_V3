@@ -9,8 +9,7 @@ class state_system():
         self.output = output
         print(output)
         if(self.state_1):
-            print("I am here", self.state_2)
-            self.mission_1_object.mission_1_state(output)
+            print("I am here in mission 1")
         if(self.state_2):
             print("Im here in mission 2")
 
