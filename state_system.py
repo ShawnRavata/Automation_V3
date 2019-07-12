@@ -2,15 +2,14 @@
 class state_system():
     def __init__(self):
         self.output = {}
-        self.state_1 = True
-        self.state_2 = False
+        self.state = 1
 
     def consume(self, output):
         self.output = output
         print(output)
-        if(self.state_1):
+        if(self.state == 1):
             print("I am here in mission 1")
-        if(self.state_2):
+        if(self.state == 2):
             print("Im here in mission 2")
 
 
