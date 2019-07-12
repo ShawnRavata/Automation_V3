@@ -1,6 +1,7 @@
 import serial
 from name_list import name_list
 
+
 class arduino_publish_value():
     def __init__(self):
         self.subs = []

@@ -1,20 +1,13 @@
 import time
-
-class Rize:
-    def readline(self):
-        output = b''
-        output = output.decode('utf-8')[:-3]
-        output = output.split(sep=",")
-        return output
-
-    def is_on(self):
-        return True
-
+import pandas as pd
 
 class RizeSimulation:
-    def __init__(self, values):
-        self.values = values
+    def __init__(self):
+        self.data = pd.read_csv("embryo_in_automation.csv")
+        self.data = self.data.to_dict('records')
+        self.values = self.data
         self.num_values_emitted = 0
+        self.subs = []
 
     def is_on(self):
         # Simulation is active while we have data
@@ -26,3 +19,11 @@ class RizeSimulation:
             output = self.values[self.num_values_emitted]
             self.num_values_emitted = self.num_values_emitted + 1
             return output
+
+    def register_subscriber(self, sub):
+        self.subs += [sub]
+
+    def __publish(self, output):
+        # Calls each of the subscribers with the output from the rize
+        for sub in self.subs:
+            sub(output)
