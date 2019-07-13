@@ -1,9 +1,10 @@
-from name_list import name_list
+from NameList import NameList
 
-class logger_controller():
+
+class LoggerController:
     def __init__(self):
         # get the name list
-        self.name_list_class_obj = name_list()
+        self.name_list_class_obj = NameList()
         self.name_list = self.name_list_class_obj.get_name_string()
         self.name_list = ",".join(self.name_list) + '\n'
         # write to file

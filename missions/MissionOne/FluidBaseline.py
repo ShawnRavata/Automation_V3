@@ -1,9 +1,11 @@
-from pydispatch import dispatcher
-from signals_list_s import signals_list
 import threading
 import time
 
-class mission_fluid_baseline():
+from pydispatch import dispatcher
+from signals_list_s import signals_list
+
+
+class FluidBaseline:
     def __init__(self, serial):
         self.current_state = [False, False, False]
         self.serial = serial
@@ -18,7 +20,7 @@ class mission_fluid_baseline():
         self.state_2 = False
         dispatcher.connect(receiver=self.receive_current_state, signal="mission_1_state", sender="state_control")
 
-        dispatcher.connect(receiver=self.state_1_receiver, signal="mission 1 terminate", sender= "mission 1")
+        dispatcher.connect(receiver=self.state_1_receiver, signal="mission 1 terminate", sender="mission 1")
         dispatcher.connect(receiver=self.state_2_receiver, signal="mission 2 start", sender="mission 1")
 
     def state_1_receiver(self, message):
@@ -31,10 +33,10 @@ class mission_fluid_baseline():
         print("state 2 is received as {}".format(message))
         print(self.state_2)
 
-
     def receive_current_state(self, message):
         print('mission fluid baseline has received message: {}'.format(message))
         self.current_state = message
+
     def receive_event(self, message):
         print('mission fluid baseline has received message: {}'.format(message))
         self.current_state = message
@@ -57,7 +59,7 @@ class mission_fluid_baseline():
         else:
             return False
 
-    def state_control(self,main_object):
+    def state_control(self, main_object):
         print("Task 1 thread assigned to thread: {}".format(threading.current_thread().name))
         bool_run_once = True
         bool_print_once = True
@@ -71,7 +73,7 @@ class mission_fluid_baseline():
             if self.terminate_bool:
                 # time.sleep(0.2)
                 # self.pump_stop()
-                if(bool_print_once_2 == True):
+                if (bool_print_once_2 == True):
                     print("We have terminated mission 1")
                     bool_print_once_2 = False
                     print(main_object.state_2)
@@ -82,28 +84,28 @@ class mission_fluid_baseline():
                 # self.event.clear()
             else:
                 # Set Flag for initialization state where pump will start pumping without any input from the chip
-                #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                if(self.sensor_in_LIQUID_sensor_out_AIR()):
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                if (self.sensor_in_LIQUID_sensor_out_AIR()):
                     self.has_the_pump_been_on = True
                 if not self.has_the_pump_been_on:
                     time.sleep(.02)
                     self.pump_set_rate(rate=0.075)
                     time.sleep(.02)
                     self.pumping_with_delays(delay_on=3, delay_off=2, rate=0.075, direction="WDR")
-                #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # State 1 Liquid at sensor in Air still at sensor out
                 # chip needs to fill with liquid
                 if (self.sensor_in_LIQUID_sensor_out_AIR()):
                     if not self.terminate_flag_one:
                         self.pumping_with_delays(delay_on=2, delay_off=3, rate=0.065, direction="WDR")
-                    elif(self.terminate_flag_one):
+                    elif (self.terminate_flag_one):
                         time.sleep(2)
-                        if(base_line_bool):
+                        if (base_line_bool):
                             dispatcher.send(message=base_line_bool, signal="base line", sender="mission 1")
                             print("sending over baseline")
                             base_line_bool = False
                         self.pumping_with_delays(delay_on=2, delay_off=3, rate=0.035, direction="WDR")
-                        if(bool_print_once):
+                        if (bool_print_once):
                             print("I am now in state Liquid Air, and finalizing pumping")
                             bool_print_once = False
                         self.terminate_flag_two = True
@@ -111,7 +113,7 @@ class mission_fluid_baseline():
                 # now push the liquid back a little bit and push the other way
                 if (self.sensor_in_LIQUID_sensor_out_LIQUID()):
                     if not self.terminate_flag_two:
-                        if(bool_run_once):
+                        if (bool_run_once):
                             self.pumping_with_delays(delay_on=3, delay_off=0, rate=0.4, direction="INF")
                             print("I just pushed back really hard")
                             bool_run_once = False
@@ -162,4 +164,4 @@ class mission_fluid_baseline():
 
     def set_up(self):
         input("Press Enter to continue...")
-        self.pump_setup(rate=.05, direction= "WDR")
+        self.pump_setup(rate=.05, direction="WDR")

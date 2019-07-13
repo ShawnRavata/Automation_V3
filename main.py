@@ -1,21 +1,32 @@
-from arduino_publish_value import arduino_publish_value
 import threading
-from logger_controller import logger_controller
-from state_system import state_system
-from TEST_mission_1_fluid_baseline import mission_1_test
+
+from LoggerController import LoggerController
+from Rize import RizeSimulation, Rize
+from StateSystem import StateSystem
+from missions.MissionOne.FluidBaselineMock import FluidBaselineMock
 
 # creates the publishing class that will take in serial arduino output and the publish it to subscribers
-rize = arduino_publish_value()
+is_simulation = True
+if is_simulation:
+    rize = RizeSimulation()
+else:
+    rize = Rize()
 
 # register the csv logger to take published arduino data
-logger_controller = logger_controller()
+logger_controller = LoggerController()
 rize.register_subscriber(logger_controller.consume)
 
 # register the state system subscriber
-state_system_object = state_system()
+state_system_object = StateSystem()
 rize.register_subscriber(state_system_object.consume)
-t1 = threading.Thread(mission_1_test.state_change)
+print("Task main thread assigned to thread: {}".format(threading.current_thread().name))
+# set up the state change thread
+mission_1_object = FluidBaselineMock(state_system_object)
+t1 = threading.Thread(target=mission_1_object.state_change, args=[state_system_object.q])
+t1.daemon = True
+t1.start()
 
-#while the arduino is connected keep publishing values
-while(rize.is_on()):
-    rize.process_value()
+# while the arduino is connected keep publishing values
+print("rize is on=", rize.is_on())
+while rize.is_on():
+    output = rize.process_value()

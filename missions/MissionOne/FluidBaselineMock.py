@@ -1,9 +1,11 @@
-import time
 import threading
+import time
 
-class mission_1_test():
-    def __init__(self,state_obj):
+
+class FluidBaselineMock:
+    def __init__(self, state_obj):
         self.state_obj = state_obj
+
     def state_change(self, q):
         print("Task thread assigned to thread: {}".format(threading.current_thread().name))
         time.sleep(5)

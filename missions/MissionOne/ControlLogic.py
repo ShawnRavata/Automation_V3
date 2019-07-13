@@ -1,7 +1,9 @@
 import time
+
 from pydispatch import dispatcher
 
-class mission_1_control_logic():
+
+class ControlLogic:
     def __init__(self):
         self.one_hot_state_length = 3
         self.one_hot_state = []
@@ -13,7 +15,7 @@ class mission_1_control_logic():
         self.well_26 = ""
         self.is_on = False
 
-    def mission_1_state(self ,output):
+    def mission_1_state(self, output):
         well_25 = self.get_impedance_state(output["IMPEDANCE 25"])
         well_27 = self.get_impedance_state(output["IMPEDANCE 27"])
         well_26 = self.get_impedance_state(output["IMPEDANCE 26"])
@@ -49,8 +51,10 @@ class mission_1_control_logic():
             return "LIQUID"
         else:
             return "ERROR"
+
     def state_1_control_sends_current_state(self):
         dispatcher.send(message=self.one_hot_state, signal="mission_1_state", sender="state_control")
+
     def set_all_states_false(self):
         for i in range(self.one_hot_state_length):
             self.one_hot_state[i] = False
