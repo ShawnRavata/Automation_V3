@@ -61,7 +61,7 @@ class RizeSimulation:
         return self.num_values_emitted < len(self.values)
 
     def process_value(self):
-        time.sleep(.5)
+        time.sleep(.001)
         if self.is_on():
             output = self.values[self.num_values_emitted]
             self.num_values_emitted = self.num_values_emitted + 1

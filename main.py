@@ -3,7 +3,7 @@ import threading
 from LoggerController import LoggerController
 from Rize import RizeSimulation, Rize
 from StateSystem import StateSystem
-from missions.MissionOne.FluidBaselineMock import FluidBaselineMock
+from missions.MissionOne.FluidBaseline import FluidBaseline
 
 # creates the publishing class that will take in serial arduino output and the publish it to subscribers
 is_simulation = True
@@ -21,8 +21,8 @@ state_system_object = StateSystem()
 rize.register_subscriber(state_system_object.consume)
 print("Task main thread assigned to thread: {}".format(threading.current_thread().name))
 # set up the state change thread
-mission_1_object = FluidBaselineMock(state_system_object)
-t1 = threading.Thread(target=mission_1_object.state_change, args=[state_system_object.q])
+mission_1_object = FluidBaseline()
+t1 = threading.Thread(target=mission_1_object.pump_tasks, args=[state_system_object])
 t1.daemon = True
 t1.start()
 
