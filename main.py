@@ -3,7 +3,7 @@ import threading
 from LoggerController import LoggerController
 from Rize import RizeSimulation, Rize
 from StateSystem import StateSystem
-from missions.MissionOne.FluidBaseline import FluidBaseline
+from missions.Mission_1.FluidBaseline import FluidBaseline
 
 # creates the publishing class that will take in serial arduino output and the publish it to subscribers
 is_simulation = True

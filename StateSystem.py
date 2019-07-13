@@ -1,4 +1,4 @@
-from missions.MissionOne.ControlLogic import ControlLogic as Control_1
+from missions.Mission_1.ControlLogic import ControlLogic as Control_1
 
 
 class StateSystem:

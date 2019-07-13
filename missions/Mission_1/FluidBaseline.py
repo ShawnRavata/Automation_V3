@@ -8,7 +8,7 @@ import threading
 
 class FluidBaseline:
     def __init__(self):
-        self.current_state = [False, False, False]
+        self.current_state = [False, False, False, False]
         self.has_the_pump_been_on = False
         self.terminate_flag_one = False
         self.terminate_flag_two = False
@@ -38,6 +38,11 @@ class FluidBaseline:
             return True
         else:
             return False
+    def sensor_in_LIQUID_sensor_out_AirOrResidue_sensor26_LIQUID(self):
+        if (self.current_state[3] == True):
+            return True
+        else:
+            return False
 
     def pump_tasks(self, state_system_object):
         bool_run_once = True
@@ -59,29 +64,20 @@ class FluidBaseline:
                 # State 1 Liquid at sensor in Air still at sensor out
                 # chip needs to fill with liquid
                 if (self.sensor_in_LIQUID_sensor_out_AIR()):
-                    if not self.terminate_flag_one:
-                        self.pump.pumping_with_delays(delay_on=2, delay_off=3, rate=0.065, direction="WDR")
-                    elif (self.terminate_flag_one):
-                        time.sleep(2)
-                        if (base_line_bool):
-                            print("sending over baseline")
-                            state_system_object.set_baseline()
-                            base_line_bool = False
-                        self.pump.pumping_with_delays(delay_on=2, delay_off=3, rate=0.035, direction="WDR")
-                        if (bool_print_once):
-                            print("I am now in state Liquid Air, and finalizing pumping")
-                            bool_print_once = False
-                        self.terminate_flag_two = True
+                    self.pump.pumping_with_delays(delay_on=2, delay_off=3, rate=0.065, direction="WDR")
                 # State 2 Liquid on the chip
                 # now push the liquid back a little bit and push the other way
                 if (self.sensor_in_LIQUID_sensor_out_LIQUID()):
-                    if not self.terminate_flag_two:
-                        if (bool_run_once):
-                            self.pump.pumping_with_delays(delay_on=3, delay_off=0, rate=0.4, direction="INF")
-                            print("I just pushed back really hard")
-                            bool_run_once = False
-                        self.pump.pumping_with_delays(delay_on=2, delay_off=3, rate=0.035, direction="INF")
-                        self.terminate_flag_one = True
-                    else:
-                        print("I am in state liquid liquid and I'm about to terminate the program")
+                    if (bool_run_once):
+                        self.pump.pumping_with_delays(delay_on=3, delay_off=0, rate=0.6, direction="INF")
+                        print("Pump is now infusing backwards with great temporary force")
+                        bool_run_once = False
+                    self.pump.pumping_with_delays(delay_on=2, delay_off=3, rate=0.035, direction="INF")
+                if(self.sensor_in_LIQUID_sensor_out_AirOrResidue_sensor26_LIQUID()):
+                    time.sleep(.02)
+                    self.pump.stop()
+                    if (base_line_bool):
+                        print("sending over baseline")
+                        state_system_object.set_baseline()
+                        base_line_bool = False
                         self.terminate_bool = True
