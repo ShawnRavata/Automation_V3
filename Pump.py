@@ -3,7 +3,7 @@ import time
 import serial
 
 
-class Pump():
+class Pump:
     def __init__(self):
         self.pump_serial = serial.Serial(
             port='COM10',
