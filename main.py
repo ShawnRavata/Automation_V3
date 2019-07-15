@@ -4,6 +4,7 @@ from LoggerController import LoggerController
 from Rize import RizeSimulation, Rize
 from StateSystem import StateSystem
 from missions.Mission_1.FluidBaseline import FluidBaseline
+from missions.Mission_2.EmbryoIn import EmbryoIn
 
 # creates the publishing class that will take in serial arduino output and the publish it to subscribers
 is_simulation = True
@@ -21,10 +22,14 @@ state_system_object = StateSystem()
 rize.register_subscriber(state_system_object.consume)
 print("Task main thread assigned to thread: {}".format(threading.current_thread().name))
 # set up the state change thread
+mission_2_object = EmbryoIn()
 mission_1_object = FluidBaseline()
 t1 = threading.Thread(target=mission_1_object.pump_tasks, args=[state_system_object])
 t1.daemon = True
 t1.start()
+t2 = threading.Thread(target=EmbryoIn.pump_tasks(state_system_object))
+t2.daemon = True
+t2.start()
 
 # while the arduino is connected keep publishing values
 print("rize is on=", rize.is_on())

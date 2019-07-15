@@ -21,3 +21,9 @@ class NameList:
     def get_name_string(self):
         column_list = self.name_list.split(sep=",")
         return column_list
+
+    def get_impedance_list(self):
+        column_list = self.name_list.split(sep=",")
+        impedance_list = list(filter(lambda name: "IMPEDANCE" in name, list(column_list)))
+        impedance_list = impedance_list[0:21]
+        return impedance_list

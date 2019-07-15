@@ -16,14 +16,11 @@ class Pump():
     def pumping_with_delays(self, delay_on, delay_off, rate, direction):
         delay_bool = False
         if delay_bool == False:
-            time.sleep(.02)
             self.setup(rate=rate, direction=direction)
-            time.sleep(.02)
             self.start()
             time.sleep(delay_on)
             delay_bool = True
         if delay_bool == True:
-            time.sleep(.02)
             self.stop()
             time.sleep(delay_off)
             delay_bool = False
@@ -42,12 +39,15 @@ class Pump():
         self.send_command(direction_command)
 
     def start(self):
+        time.sleep(.02)
         self.send_command("RUN")
 
     def stop(self):
+        time.sleep(.02)
         self.send_command("STP")
 
     def setup(self, rate, direction):
+        time.sleep(.02)
         self.set_rate(rate=rate)
         time.sleep(.02)
         self.set_direction(direction=direction)

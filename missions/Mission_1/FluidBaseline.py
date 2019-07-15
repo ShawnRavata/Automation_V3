@@ -1,10 +1,7 @@
-import time
 
 from pydispatch import dispatcher
 
 from Pump import MockPump
-
-import threading
 
 class FluidBaseline:
     def __init__(self):
@@ -74,7 +71,6 @@ class FluidBaseline:
                         bool_run_once = False
                     self.pump.pumping_with_delays(delay_on=2, delay_off=3, rate=0.035, direction="INF")
                 if(self.sensor_in_LIQUID_sensor_out_AirOrResidue_sensor26_LIQUID()):
-                    time.sleep(.02)
                     self.pump.stop()
                     if (base_line_bool):
                         print("sending over baseline")
