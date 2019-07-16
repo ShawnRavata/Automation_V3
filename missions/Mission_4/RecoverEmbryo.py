@@ -8,7 +8,7 @@ class Recover():
         dispatcher.connect(receiver=self.receive_current_state, signal="mission_2_state", sender="state_control_2")
 
     def receive_current_state(self, message):
-        print('mission fluid baseline has received message: {}'.format(message))
+        print('mission recover has received message: {}'.format(message))
         self.current_state = message
 
     def pump_tasks(self,state_system):

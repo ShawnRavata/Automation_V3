@@ -23,6 +23,11 @@ class ControlLogic():
         self.run_once_1 = True
         if self.Sim != True:
             self.embryo_count = input("enter embryo count")
+        # testing print statements
+        self.print_once_1 = True
+        self.print_once_2 = True
+        self.print_once_3 = True
+        self.print_once_4 = True
 
     def control_state_logic(self, output):
         well_25 = get_impedance_state(output["IMPEDANCE 25"])
@@ -50,17 +55,29 @@ class ControlLogic():
     def pumping_action(self, well_24, well_25, well_26, well_27, output):
         if (well_25 == "LIQUID" and well_26 == "LIQUID" and (well_27 == "AIR" or well_27 == "RESIDUE")):
             self.state = 1
+            if (self.print_once_1):
+                print("Embryo in state 1")
+                self.print_once_1 = False
             if self.run_once_1 == True:
                 self.set_baseline(output)
                 self.run_once_1 = False
                 print("set the baseline")
         elif (well_25 == "LIQUID" and well_26 == "LIQUID" and well_27 == "LIQUID"):
+            if (self.print_once_2):
+                print("Embryo in state 2")
+                self.print_once_2 = False
             self.state = 2
         elif ((well_25 == "AIR" or well_25 == "RESIDUE") and well_24 == "LIQUID"
               and well_26 == "LIQUID" and well_27 == "LIQUID"):
+            if (self.print_once_3):
+                print("Embryo in state 3")
+                self.print_once_3 = False
             self.state = 3
             if not self.check_for_embryo(output=output):
                 print("WE ARE IN SIMULATION NO EMBRYOS MOVING TO NEXT MISSION")
+                if (self.print_once_4):
+                    print("Embryo in state 4")
+                    self.print_once_4 = False
                 self.state = 4
         elif (self.state == 4):
             pass

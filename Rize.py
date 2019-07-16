@@ -9,6 +9,7 @@ from NameList import NameList
 class Rize:
     def __init__(self):
         self.subs = []
+        self.screw_up_count = 0
         self.arduino = serial.Serial(port="COM12", baudrate=115200)
         print("Arduino is connected", self.arduino.is_open)
         self.name_list_class_obj = NameList()
@@ -25,19 +26,21 @@ class Rize:
             if len(self.name_list) == len(output):
                 output = {key: float(val) for key, val in zip(self.name_list, output)}
                 self.__publish(output)
-            # else:
-            # print("****Arduino Value Send Error*****")
-            # print(output)
-            # print("^^^^Arduino Value Send Error^^^^")
+            else:
+                self.screw_up_count += 1
+                print("we have messed up readline",self.screw_up_count,"times")
+                # print("****Arduino Value Send Error*****")
+                # print(output)
+                # print("^^^^Arduino Value Send Error^^^^")
         except TypeError:
-            pass
-            # print("TYPE ERROR DANIEL")
+            # pass
+            print("TYPE ERROR DANIEL")
         except UnicodeDecodeError:
-            pass
-            # print("UNICODE DECODE ERROR DANIEL")
+            # pass
+            print("UNICODE DECODE ERROR DANIEL")
         except ValueError:
-            pass
-            # print("VALUE ERROR DANIEL")
+            # pass
+            print("VALUE ERROR DANIEL")
 
     def is_on(self):
         return self.arduino.is_open
