@@ -2,16 +2,16 @@ import time
 
 import serial
 
-
-class Pump():
-    def __init__(self):
-        self.pump_serial = serial.Serial(
-            port='COM10',
+pump_serial = serial.Serial(
+            port='COM9',
             baudrate=19200,
             bytesize=8,
             stopbits=1,
             parity='N',
         )
+class Pump():
+    def __init__(self):
+        pass
 
     def pumping_with_delays(self, delay_on, delay_off, rate, direction):
         delay_bool = False
@@ -28,7 +28,7 @@ class Pump():
     def send_command(self, command):
         command += '\r\n'
         command = bytes(command, 'utf-8')
-        self.pump_serial.write(command)
+        pump_serial.write(command)
 
     def set_rate(self, rate):
         rate_command = "RAT " + str(rate) + "MM"

@@ -6,7 +6,6 @@ class StateSystem:
     def __init__(self):
         self.output = {}
         self.state = 1
-        self.base_line_impedance = {}
         self.control_1_obj = Control_1()
         self.control_2_obj = Control_2()
         self.print_once_1 = True

@@ -12,7 +12,7 @@ class Rize:
         self.arduino = serial.Serial(port="COM12", baudrate=115200)
         print("Arduino is connected", self.arduino.is_open)
         self.name_list_class_obj = NameList()
-        self.name_list = NameList.get_name_string()
+        self.name_list = self.name_list_class_obj.get_name_string()
 
     def register_subscriber(self, sub):
         self.subs += [sub]

@@ -1,7 +1,10 @@
-from pydispatch import dispatcher
 import time
-from get_impedance_range import get_impedance_state
+
+from pydispatch import dispatcher
+
 from NameList import NameList
+from get_impedance_range import get_impedance_state
+
 
 class ControlLogic():
     def __init__(self):
@@ -41,7 +44,7 @@ class ControlLogic():
                   "well 26 value:", output["IMPEDANCE 26"],
                   "well 27 value:", output["IMPEDANCE 27"]
                   )
-            self.pumping_action(well_24=well_24, well_25=well_25, well_26=well_26, well_27=well_27,output=output)
+            self.pumping_action(well_24=well_24, well_25=well_25, well_26=well_26, well_27=well_27, output=output)
             self.state_2_control_sends_current_state()
 
     def pumping_action(self, well_24, well_25, well_26, well_27, output):
@@ -51,44 +54,42 @@ class ControlLogic():
                 self.set_baseline(output)
                 self.run_once_1 = False
                 print("set the baseline")
-        elif(well_25 == "LIQUID" and well_26 == "LIQUID" and well_27 == "LIQUID"):
+        elif (well_25 == "LIQUID" and well_26 == "LIQUID" and well_27 == "LIQUID"):
             self.state = 2
-        elif((well_25 == "AIR" or well_25 == "RESIDUE") and well_24 == "LIQUID"
-                and well_26 == "LIQUID" and well_27 == "LIQUID"):
+        elif ((well_25 == "AIR" or well_25 == "RESIDUE") and well_24 == "LIQUID"
+              and well_26 == "LIQUID" and well_27 == "LIQUID"):
             self.state = 3
             if not self.check_for_embryo(output=output):
                 print("WE ARE IN SIMULATION NO EMBRYOS MOVING TO NEXT MISSION")
                 self.state = 4
-        elif(self.state == 4):
+        elif (self.state == 4):
             pass
 
-
-
     def state_2_control_sends_current_state(self):
-        dispatcher.send(message=self.state, signal="state_2" , sender="state_control_2")
+        dispatcher.send(message=self.state, signal="state_2", sender="state_control_2")
 
     def set_baseline(self, baseline):
         impedance_list = self.NameList.get_impedance_list()
         new_baseline = {}
         for i in range(len(impedance_list)):
-            new_baseline.update({ impedance_list[i] :baseline[impedance_list[i]]})
+            new_baseline.update({impedance_list[i]: baseline[impedance_list[i]]})
         self.base_line_impedance = new_baseline
 
     def look_at_current_well_1_to_21(self, output):
         impedance_list = self.NameList.get_impedance_list()
         new_output = {}
         for i in range(len(impedance_list)):
-            new_output.update({ impedance_list[i] :output[impedance_list[i]]})
+            new_output.update({impedance_list[i]: output[impedance_list[i]]})
         return new_output
 
     def check_for_embryo(self, output):
         impedance_list = self.NameList.get_impedance_list()
         impedance_output = self.look_at_current_well_1_to_21(output)
         for i in range(len(impedance_list)):
-            if impedance_output[impedance_list[i]] - self.base_line_impedance[impedance_list[i]]:
+            if impedance_output[impedance_list[i]] - self.base_line_impedance[impedance_list[i]] > 150:
                 self.embryo_count += 1
                 self.embryo_event_list.append("embryo event at well " + str(i))
-                self.embryo_log.update({"well "+str(i) : impedance_output[impedance_list[i]]})
+                self.embryo_log.update({"well " + str(i): impedance_output[impedance_list[i]]})
         if self.embryo_count == 0:
             return False
         else:

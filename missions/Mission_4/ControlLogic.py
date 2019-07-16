@@ -36,8 +36,17 @@ class ControlLogic():
             self.state_4_control_sends_current_state()
 
     def pumping_action(self, well_24, well_25, well_26, well_27, output):
-        if (well_24 == "LIQUID" and well_25 == "LIQUID" and well_26 == "LIQUID" or well_27 == "LIQUID"):
+        if (well_24 == "LIQUID" and well_25 == "AIR" and well_26 == "LIQUID" or well_27 == "LIQUID"):
             self.state = 1
-
+        if (well_24 == "LIQUID" and well_25 == "LIQUID" and well_26 == "LIQUID" or well_27 == "LIQUID"):
+            self.state = 2
+        if (well_24 == "LIQUID" and well_25 == "LIQUID" and well_26 == "LIQUID" or well_27 == "AIR"):
+            self.state = 3
+        if (well_24 == "LIQUID" and well_25 == "LIQUID" and well_26 == "AIR" or well_27 == "AIR"):
+            self.state = 4
+        if (well_24 == "LIQUID" and well_25 == "AIR" and well_26 == "AIR" or well_27 == "AIR"):
+            self.state = 5
+        if (well_24 == "AIR" and well_25 == "AIR" and well_26 == "AIR" or well_27 == "AIR"):
+            self.state = 6
     def state_4_control_sends_current_state(self):
         dispatcher.send(message=self.state, signal="state_4" , sender="state_control_4")

@@ -11,7 +11,7 @@ class EmbryoIn():
         print('mission fluid baseline has received message: {}'.format(message))
         self.current_state = message
 
-    def pump_tasks(self,state_system):
+    def pump_tasks(self, state_system_object):
         go = True
         while(go):
             if(self.current_state == 1):
@@ -21,7 +21,7 @@ class EmbryoIn():
             elif(self.current_state == 3):
                 self.pump.stop()
             elif(self.current_state == 4):
-              state_system.set_state(4)
+              state_system_object.set_state(4)
               go = False
 
 

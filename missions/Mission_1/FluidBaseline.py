@@ -1,7 +1,7 @@
 
 from pydispatch import dispatcher
 
-from Pump import MockPump
+from Pump import Pump
 
 class FluidBaseline:
     def __init__(self):
@@ -10,9 +10,10 @@ class FluidBaseline:
         self.terminate_flag_one = False
         self.terminate_flag_two = False
         self.terminate_bool = False
-        self.pump = MockPump()
-        print("THE MOCK PUMP IS ON")
+        self.pump = Pump()
         dispatcher.connect(receiver=self.receive_current_state, signal="mission_1_state", sender="state_control")
+        self.bool_run_once = True
+        self.base_line_bool = True
 
     def receive_current_state(self, message):
         print('mission fluid baseline has received message: {}'.format(message))
@@ -42,10 +43,7 @@ class FluidBaseline:
             return False
 
     def pump_tasks(self, state_system_object):
-        bool_run_once = True
-        bool_print_once = True
-        bool_print_once_2 = True
-        base_line_bool = True
+
         go = True
         while (go):
             if self.terminate_bool:
@@ -65,15 +63,15 @@ class FluidBaseline:
                 # State 2 Liquid on the chip
                 # now push the liquid back a little bit and push the other way
                 if (self.sensor_in_LIQUID_sensor_out_LIQUID()):
-                    if (bool_run_once):
+                    if (self.bool_run_once):
                         self.pump.pumping_with_delays(delay_on=3, delay_off=0, rate=0.6, direction="INF")
                         print("Pump is now infusing backwards with great temporary force")
-                        bool_run_once = False
+                        self.bool_run_once = False
                     self.pump.pumping_with_delays(delay_on=2, delay_off=3, rate=0.035, direction="INF")
                 if(self.sensor_in_LIQUID_sensor_out_AirOrResidue_sensor26_LIQUID()):
                     self.pump.stop()
-                    if (base_line_bool):
+                    if (self.base_line_bool):
                         print("sending over baseline")
                         state_system_object.set_baseline()
-                        base_line_bool = False
+                        self.base_line_bool = False
                         self.terminate_bool = True

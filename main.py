@@ -7,7 +7,7 @@ from missions.Mission_1.FluidBaseline import FluidBaseline
 from missions.Mission_2.EmbryoIn import EmbryoIn
 
 # creates the publishing class that will take in serial arduino output and the publish it to subscribers
-is_simulation = True
+is_simulation = False
 if is_simulation:
     rize = RizeSimulation()
 else:
@@ -27,7 +27,7 @@ mission_1_object = FluidBaseline()
 t1 = threading.Thread(target=mission_1_object.pump_tasks, args=[state_system_object])
 t1.daemon = True
 t1.start()
-t2 = threading.Thread(target=EmbryoIn.pump_tasks(state_system_object))
+t2 = threading.Thread(target=mission_2_object.pump_tasks, args=[state_system_object])
 t2.daemon = True
 t2.start()
 
