@@ -25,12 +25,12 @@ print("Task main thread assigned to thread: {}".format(threading.current_thread(
 # set up the state change thread
 mission_2_object = EmbryoIn()
 mission_1_object = FluidBaseline()
-t1 = multiprocessing.Process(target=mission_1_object.pump_tasks, args=[state_system_object])
+t1 = multiprocessing.Process(target=mission_1_object.pump_tasks, args=(state_system_object,))
 t1.daemon = True
 t1.start()
-# t2 = threading.Thread(target=mission_2_object.pump_tasks, args=[state_system_object])
-# t2.daemon = True
-# t2.start()
+t2 = multiprocessing.Process(target=mission_2_object.pump_tasks, args=(state_system_object,))
+t2.daemon = True
+t2.start()
 
 # while the arduino is connected keep publishing values
 print("rize is on=", rize.is_on())

@@ -20,6 +20,7 @@ class Rize:
 
     def process_value(self):
         output = self.arduino.readline()
+        # output = math_process(output)
         try:
             output = output.decode('utf-8')[:-3].split(sep=",")
             # I have an error where some values get cut off from the arduino and this is the dirty fix to solve it
@@ -77,3 +78,5 @@ class RizeSimulation:
         # Calls each of the subscribers with the output from the rize
         for sub in self.subs:
             sub(output)
+    def math(self, arg_output):
+        pass
