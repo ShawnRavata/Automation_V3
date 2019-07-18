@@ -4,29 +4,23 @@ import pandas as pd
 import serial
 
 from NameList import NameList
-class read_line():
-    def __init__(self, rize):
-        self.output = {}
-        self.arduino = serial.Serial(port="COM6", baudrate=115200)
-        print("Arduino is connected", self.arduino.is_open)
-        self.rize_obj = rize
-    def read_the_line(self):
-        while self.arduino.is_open:
-            print("I'm here in another process")
-            output = self.arduino.readline()
-            self.rize_obj.process_value(output=output)
+
 
 class Rize:
     def __init__(self):
         self.subs = []
         self.screw_up_count = 0
+        self.arduino = serial.Serial(port="COM6", baudrate=115200, timeout=0)
+        print("Arduino is connected", self.arduino.is_open)
         self.name_list_class_obj = NameList()
         self.name_list = self.name_list_class_obj.get_name_string()
+
     def register_subscriber(self, sub):
         self.subs += [sub]
 
-    def process_value(self, output):
-        output = self.output
+    def process_value(self):
+        output = self.arduino.readline()
+        print(output)
         # output = math_process(output)
         try:
             output = output.decode('utf-8')[:-3].split(sep=",")
@@ -50,12 +44,13 @@ class Rize:
             # pass
             print("VALUE ERROR DANIEL")
 
+    def is_on(self):
+        return self.arduino.is_open
+
     def __publish(self, output):
         # Calls each of the subscribers with the output from the rize
         for sub in self.subs:
             sub(output)
-    def get_output(self, out):
-        self.output = out
 
 
 class RizeSimulation:
